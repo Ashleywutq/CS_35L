@@ -1,0 +1,205 @@
+Lab2:
+
+1.set locale
+export LC_ALL='C'
+locale
+
+2.sort words
+sort /usr/share/dict/words -o ./words
+
+3.download html
+wget https://web.cs.ucla.edu/classes/winter18/cs35L/assign/assign2.html
+
+4.run commands
+tr -c 'A-Za-z' '[\n*]' < assign2.html
+change anything that is not A-Za-z to the same number of \n
+
+tr -cs 'A-Za-z' '[\n*]' < assign2.html
+change anything that is not A-Za-z to \n. If there are repeated pattern of A-Za-z, only change to \n once
+
+tr -cs 'A-Za-z' '[\n*]' < assign2.html | sort 
+change anything	that is	not A-Za-z to \n. If there are repeated pattern of A-Za-z, only change	to \n once. Sort the result
+
+tr -cs 'A-Za-z' '[\n*]' < assign2.html | sort -u
+change anything that is not A-Za-z to \n. If there are repeated pattern of A-Za-z, only change  to \n once. Sort the result, and delete the repeated ones.
+
+tr -cs 'A-Za-z' '[\n*]' <assign2.html | sort -u | comm - words
+take the output from last command and compare it to words line by line. produce three column output.
+First column contains lines unique to File1
+Second column contains lines unique to File2
+Third column contains lines common to both files 
+
+tr -cs 'A-Za-z' '[\n*]' <assign2.html | sort -u | comm -23 - words
+present only lines unique to File1
+
+5.download webpage
+wget http://mauimapp.com/moolelo/hwnwdseng.htm
+
+6. extract all lines with <td>string</td>
+grep "<td>..*<\/td>" hwnwdseng.htm
+
+7.delete all the odd lines (english words)
+| sed -n 2~2p
+
+8.remove all the <td> and <td/> and leading spaces
+| sed "s/^.*<td>//g" | sed "s/<\/td>//g"
+
+9.change all upper letter to lower
+| tr [A-Z] [a-z]
+
+10.delete <u> </u>
+| sed "s/<u>//g" | sed "s/<\/u>//g"
+
+11.replace ` with '
+| sed "s/\`/\'/g"
+
+12.replace spaces or commas with a single \n
+| tr -s '[ ,]' '\n'
+
+13.eliminate words that do not have Hawaiian letters
+| grep "^[pk'mnwlhaeiou]*$"
+
+14.sort/unique
+| sort -u >hwords
+
+whole code:
+grep "<td>..*<\/td>" hwnwdseng.htm | sed -n 2~2p | sed "s/^.*<td>//g" | sed "s/<\/td>//g" | tr [A-Z] [a-z] | sed "s/<u>//g" | sed "s/<\/u>//g" | sed "s/\`/\'/g" | tr -s '[ ,]' '\n' | grep "^[pk'mnwlhaeiou]*$" | sort -u >hwords
+
+15.make script builwords
+emacs buildwords
+chmod u+x buildwords
+
+in the script:
+grep "<td>..*<\/td>" | sed -n 2~2p | sed "s/^.*<td>//g" | sed "s/<\/td>//g" | tr [A-Z] [a-z] | sed "s/<u>//g" | sed "s/<\/u>//g" | sed "s/\`/\'/g" | tr -s '[ ,]' '\n' | grep "^[pk'mnwlhaeiou]*$" | sort -u	
+
+cat hwnwdseng.htm | ./buildwords |less
+
+16.mis spelled english
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr 'A-Z' 'a-z' | sort -u | comm -23 - words | wc -w
+38
+
+17.misspelled Hawaiian
+cat assign2.html | tr -cs "pk\'mnwlhaeiou" '[\n*]' | tr [A-Z] [a-z] | sort -u | comm -23 - hwords | wc -w
+199
+
+18.misspelled english but not as Haiwaiian
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | tr '[A-Z]' '[a-z]' | sort -u | comm -23 - words | tr -cs "pk\'mnwlhaeiou" '[\n*]' | sort -u | comm -12 - hwords
+e
+halau
+i
+lau
+po
+wiki
+
+19.misspelled Haiwaiian but not english
+cat assign2.html | tr -cs "pk\'mnwlhaeiou" '[\n*]' | tr [A-Z] [a-z] | sort -u | comm -23 - hwords | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -12 - words 
+a
+ail
+ain
+ake
+al
+ale
+alen
+all
+amine
+amp
+ample
+an
+aph
+aul
+awk
+e
+ea
+ee
+el
+em
+emp
+en
+ep
+epa
+h
+ha
+han
+hap
+he
+hei
+hell
+hem
+hen
+hi
+hin
+ho
+how
+howe
+ia
+ie
+ile
+imp
+in
+ion
+iou
+k
+keep
+kin
+l
+lan
+le
+lea
+li
+like
+line
+link
+ll
+ln
+lo
+lowe
+m
+mail
+man
+me
+men
+mi
+ml
+mo
+mp
+n
+name
+ne
+nee
+no
+non
+nu
+num
+o
+om
+on
+one
+op
+ope
+open
+owe
+own
+p
+pe
+pell
+people
+plea
+pu
+u
+ui
+ula
+ule
+ume
+ump
+un
+uni
+w
+wa
+wan
+we
+wh
+wha
+who
+wi
+wo
+

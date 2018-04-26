@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#read in the directory D, and sort
+dir=$1
+file=`ls -a $dir | sort`
+count=0
+declare -a arr
+
+#get regular/readable files
+for f in $file
+do
+    if [ -f "$dir/$f" ]
+    then
+	if [ ! -r "$dir/$f" ]
+	then
+	    echo "$f is not readable"
+	else
+	    arr[$count]="$dir/$f"
+	    count=$(($count+1))
+	fi
+    fi
+done
+
+
+#compare and create links
+for (( i=0; $i<$count; i++ ))
+do
+    for (( j=$(($i+1)); $j<$count; j++ ))
+    do
+        cmp -s "${arr[$i]}" "${arr[$j]}"
+        if [ $? -eq 0 ]
+        then
+	    ln -fP "${arr[$i]}" "${arr[$j]}"
+	    arr[$j]=arr[$i]
+     	fi
+    done
+done

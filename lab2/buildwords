@@ -1,0 +1,2 @@
+#!/bin/bash
+grep "<td>..*<\/td>" | sed -n 2~2p | sed "s/^.*<td>//g" | sed "s/<\/td>//g" | tr [A-Z] [a-z] | sed "s/<u>//g" | sed "s/<\/u>//g" | sed "s/\`/\'/g" | tr -s '[ ,]' '\n' | grep "^[pk'mnwlhaeiou]*$" | sort -u	

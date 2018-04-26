@@ -1,0 +1,110 @@
+Lab:
+1.man man
+  I read through man man to get the answer
+2.find /usr/local/cs/bin -name cp
+  find /usr/local/cs/bin -name wc
+3.find /usr/bin -name '?' -executable
+  I read through man find to get the answer to find the files
+  then I read man [, man w
+  man X has no enrty,then I went to it's directory and did ls -l X
+  I found that X->Xorg, then I type man Xorg to get the answer
+4.ls -l /usr/bin/emacs
+5.read man chmod for the answer
+6.read man find for the answer
+7.find / -type d -mtime 21
+8.find the directory of find: which find:
+  the directory is usr/bin/find
+  find the symbolic links and count using wc:
+  find /usr/bin -type l | wc -l
+  I read multiple manuals to solve this problem
+9.ls usr/lib -art
+  read lecture to find the answer
+10. read man locale
+11.emacs C-h a sort <enter> C-M-v C-x 1
+12.emacs C-h k <the key to search>
+13.emacs C-h k C-g
+14.emacs C-h f yank <enter>
+15.ls /usr/bin -l
+   in emacs: C-x d /usr/bin/ <enter>
+
+Ex1.1:
+1. emacs exer1.html <enter>
+2. C-s HTML <enter>
+3. C-s scavenger <enter> M-b
+4. C-s self- <enter> M-b
+5. C-s arrow <enter> M-b
+6. C-e
+7. C-a
+10. C-x C-c
+
+Ex1.2:
+1. emacs exer2.html <enter>
+2.C-u 18 C-n C-k
+3.C-s delete <enter> C-a C-k
+4.C-s wiki <enter> C-s wikipe <enter> C-a up C-k down C-k down C-k
+5.C-s --> <enter> DEL multiple times
+  down C-a C-k down C-k down C-k down C-k
+  C-s --> <enter> M-0 C-k
+  C-x C-s C-x C-c
+
+Ex1.3:
+1.emacs exer3.html <enter>
+2.M-% Assignment 1 Assignment 51 <space> <space> q
+3.M-< C-s UTF-8 <enter> <DEl> several times US-ASCII
+4.C-s </ol> <enter>
+5.C-x C-s C-x C-c
+
+Ex1.4:
+1.cat exer2.html exer2.diff >exer4.html
+2.emacs exer4.html <enter>
+3.M-> up up C-k C-y M-< C-s </html> <enter> right C-y
+4.M-> M-v up up C-@ down down down down down M-W M-< C-s should output <enter> C-a C-y C-k
+M-> M-v M-v down down down C-@ down down down M-W M-< C-s submit</h2> <enter> down C-y
+M-> M-v M-v C-u 6 up C-@ C-e M-W M-< C-s Emacs</h2> <enter> down down C-y
+M-> M-v M-v M-v down down C-@ down down down M-W M-< C-s hunt</h2> <enter> down down C-y
+5.M-> C-@ C-u 5 M-v C-u 8 down C-w
+6.C-x u
+7.<!--  M-> -->
+8.M-< M-% <ol> <oL> ! shows that there were 7 occurrences
+9.diff -u exer1.html exer4.html >exer4.diff
+
+Ex1.5:
+1.M-x mkdir <enter> junk <enter>
+2.M-x cd <enter> junk <enter> C-x C-f hello.c copy paste C-x C-s
+3.M-x compile <enter> delete make -k type gcc -o hello hello.c <enter>
+4.M-x compile <enter> down ./hello <enter> C-x 0 C-x C-w hello-out <enter>
+5.
+-*- mode: compilation; default-directory: "~/junk/" -*-
+Compilation started at Sat Jan 13 23:33:19
+
+./hello
+#include <stdio.h>
+int
+main (void)
+{
+  char n = '\n';
+  char b = '\\';
+  char q = '"';
+  char const *p = "#include <stdio.h>%cint%cmain (void)%c{%c  char n = '%cn';%c  \
+char b = '%c%c';%c  char q = '%c';%c  char const *p = %c%s%c;%c  printf (p, n, n,\
+ n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);%c  return 0;%c}%c";
+  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);
+  return 0;
+}
+
+Compilation finished at Sat Jan 13 23:33:19
+
+Ex1.6:
+1.C-x b <enter>
+2.(random) C-j
+3.(setq x (random)) C-j
+  (setq y (random)) C-j 
+4.(- x y) C-j
+  x=1037623873779527169
+  y=-1957541163240780951
+  result=-1616520981407079784 wrong answer
+5.M-:(- x y) C-j gives the same answer
+6.no, there is a algorithm that choose the number so the random number is only pseudo random, also there is a limit for the random function
+7.the probability that a number is bigger than +1/2limit or -1/2limit is 1/2
+  the probability that sum of two numbers is over limit is 1/2*1/2=1/4
+
