@@ -1,0 +1,123 @@
+Ashley Wu
+UID: 204612415
+
+1. in tr2b.c
+
+2. in tr2u.c
+
+3. 
+I compile them using 
+	gcc -o tr2b tr2b.c
+	gcc -o tr2u tr2u.c
+get a large file 
+	head --bytes=5000000 /dev/urandom > input.txt  
+	I wrote a file using c++ with a loop too, named inputk.txt
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  for (int i = 0; i < 5000000; i++)
+  cout << 'k';
+}
+
+g++ -o makefile c.cpp
+./makefile >inputk.txt
+
+use strace to compare system calls issued by tr2b and tr2u
+
+3a.when copy one file to another
+	strace -c ./tr2b 'a' 'A' <inputk.txt >output_a.txt
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 68.43    0.000375           1       611           write
+ 31.57    0.000173           0       613           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         4           fstat
+  0.00    0.000000           0         9           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000548                  1250         1 total
+
+	strace -c ./tr2u 'a' 'A' <inputk.txt  >output_b.txt
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 55.20   21.280760           4   5000000           write
+ 44.80   17.274435           3   5000002           read
+  0.00    0.000040           6         7           mmap
+  0.00    0.000030           8         4           mprotect
+  0.00    0.000014           7         2           open
+  0.00    0.000011          11         1           munmap
+  0.00    0.000008           8         1         1 access
+  0.00    0.000007           4         2           fstat
+  0.00    0.000007           7         1           execve
+  0.00    0.000006           3         2           close
+  0.00    0.000004           4         1           brk
+  0.00    0.000004           4         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   38.555326              10000024         1 total
+
+the buffered version has less system calls
+
+3b.when copy file to terminal
+strace -c ./tr2b 'a' 'A' <inputk.txt 
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 93.10    0.011960           2      4883           write
+  6.90    0.000887           1       613           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         4           fstat
+  0.00    0.000000           0         9           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.012847                  5522         1 total
+
+strace -c ./tr2u 'a' 'A' <inputk.txt  
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 55.06   21.926309           4   5000000           write
+ 44.94   17.895535           4   5000002           read
+  0.00    0.000022           6         4           mprotect
+  0.00    0.000011          11         1           munmap
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         2           fstat
+  0.00    0.000000           0         7           mmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   39.821877              10000024         1 total
+
+The buffered version has less system calls. 
+For buffered version, copying to a file has less system calls then writing to terminal.
+
+4.test time 
+
+time ./tr2b 'a' 'A' <test 
+
+real	0m0.004s
+user	0m0.000s
+sys	0m0.002s
+
+time ./tr2u 'a' 'A' <test 
+
+real	0m0.002s
+user	0m0.000s
+sys	0m0.001s
+
+ 

@@ -1,0 +1,84 @@
+I wrote a c program to make lines of different sizes
+
+when line has 100 words: 
+
+time cat test.txt | ../lab4/sfrob >testout.txt
+
+real	0m0.005s
+user	0m0.000s
+sys	0m0.002s
+
+time cat test.txt | ./sfrobu >testout.txt
+
+real	0m0.004s
+user	0m0.000s
+sys	0m0.004s
+
+when line has 1000 words: 
+
+time cat test.txt | ../lab4/sfrob >testout.txt
+
+real	0m0.004s
+user	0m0.003s
+sys	0m0.001s
+
+time cat test.txt | ./sfrobu >testout.txt
+
+real	0m0.010s
+user	0m0.002s
+sys	0m0.007s
+
+when line has 10000 words:
+time cat test.txt | ../lab4/sfrob >testout.txt
+
+real	0m0.015s
+user	0m0.011s
+sys	0m0.002s
+
+ time cat test.txt | ./sfrobu >testout.txt
+
+real	0m0.070s
+user	0m0.019s
+sys	0m0.045s
+
+when line has 10000 words:
+
+time cat test.txt | ../lab4/sfrob >testout.txt
+
+real	0m0.126s
+user	0m0.117s
+sys	0m0.002s
+
+time cat test.txt | ./sfrobu >testout.txt
+
+real	0m0.703s
+user	0m0.202s
+sys	0m0.501s
+
+time cat test.txt | ./sfrobu -f >testout.txt
+
+real	0m0.832s
+user	0m0.316s
+sys	0m0.516s
+
+time cat test.txt | ./sfrobs >testout.txt
+
+real	0m0.044s
+user	0m0.026s
+sys	0m0.014s
+
+time cat test.txt | ./sfrobs -f >testout.txt
+
+real	0m0.043s
+user	0m0.027s
+sys	0m0.018s
+
+We can see that buffered version is faster than unbuffered version. The shell script version is the fastest. Adding -f will make sfrobu a little bit slower but the shell script version' performance is around the same.
+ 
+number of comparison vs number of input lines:
+is around f(x) = 17x - 100000
+
+
+
+
+
