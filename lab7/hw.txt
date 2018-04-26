@@ -1,0 +1,8 @@
+answers to hw questions:
+
+1. The network is safe because if we are sending data through ssh, everything we send through the internet is encrypted. 
+(1) If the other team has access to the keyboard then the network is still safe, because even if they can see what we typed as the passphrase for the private key, they can't deduce our private key from it unless they can hack into our computer. 
+(2) If we are booting off USB and the other teams have physical control of the USB then our network is not secure. Because the other team can read the private key data stored on the USB.
+
+2. --verify only compare the decrypted data to the signiture and verifies whether the file is modified or not and who send the file. 
+To solve this problem, we can have a trusted third party as distribution party which ensures that the file sent is the original data.  

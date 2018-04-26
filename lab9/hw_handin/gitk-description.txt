@@ -1,0 +1,12 @@
+Lower:
+Left:
+ChangeLog of commit/merge, and details of the changes
+
+Right:
+display the files related to the choosen commit 
+
+Upper:
+Left: a list of commits and branches 
+Middle: author's info
+Right: modification date 
+

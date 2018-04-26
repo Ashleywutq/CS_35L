@@ -1,0 +1,148 @@
+1. the a copy from the repo 
+git clone ~eggert/src/gnu/diffutils
+
+2. get a log of the changes
+git log >git-log.txt
+
+3. get a list of tags 
+git tag >git-tags.txt
+
+4. in the log, find the commit ID of “maint: quote 'like this' or "like this", not `like this'”
+commit ID 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f 
+
+generate the patch for version 3.0: 
+git format-patch -1 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f -- stdout > quote-patch.txt
+
+5.checkout version 3.0 of program
+git checkout v3.0
+git checkout -b myv3.0
+
+6.patch 
+patch -p1 < quote-patch.txt
+there are some cases where it can't find the file, type RETURN to skip those
+
+7. git status
+On branch myv3.0
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   NEWS
+	modified:   README
+	modified:   TODO
+	modified:   doc/diagmeet.note
+	modified:   ms/config.bat
+	modified:   ms/config.site
+	modified:   po/en.po
+	modified:   src/analyze.c
+	modified:   src/cmp.c
+	modified:   src/context.c
+	modified:   src/diff.c
+	modified:   src/diff.h
+	modified:   src/diff3.c
+	modified:   src/dir.c
+	modified:   src/ifdef.c
+	modified:   src/io.c
+	modified:   src/sdiff.c
+	modified:   src/side.c
+	modified:   src/system.h
+	modified:   src/util.c
+	modified:   tests/help-version
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	NEWS.orig
+	README-hacking.orig
+	README-hacking.rej
+	README.orig
+	README.rej
+	cfg.mk.orig
+	cfg.mk.rej
+	git-log.txt
+	git-tags.txt
+	ms/config.site.orig
+	quote-patch.txt
+	src/cmp.c.orig
+	src/context.c.orig
+	src/diff.c.orig
+	src/diff.c.rej
+	src/diff.h.orig
+	src/diff3.c.orig
+	src/diff3.c.rej
+	src/dir.c.orig
+	src/sdiff.c.orig
+	src/system.h.orig
+	src/util.c.orig
+	tests/help-version.orig
+
+8. learn to use emacs functions 
+
+9.revert changes to files other than .c files 
+	I used emacs to open these files and use C-x v u to revert changes
+
+revert changes to .c files other than changes to character string constants 
+	use C-x v = to open *vc-diff* buffer
+	use reverse (diff-apply-hunk) to reverse changes C-u C-c C-a
+	use C-c C-c to go to source 
+	use M-n to move to next hunk
+
+10. examine and copy rejected patches 
+src/diff.c.rej
+src/diff3.c.rej
+
+I opened each file and use C-s to replace ` with 'if needed 
+
+11. delete all the untracked files 
+	find . -type f -name '*.orig' -delete 
+	find . -type f -name '*.rej' -delete 
+
+12.git status shows 6 modified files 
+generate patch: 
+git diff > quote-3.0-patch.txt
+
+13. build the modified version 
+I switched to lnxsrv08 to do this 
+./bootstrap
+./configure
+make
+make check
+
+check if it's doing right:
+./src/diff . -
+./src/diff --help
+they both disaplay ' rather than ` which shows that our patch works
+
+14. sanity test
+first I stage and commit the changes made 
+git add src/cmp.c src/diff.c src/diff3.c src/dir.c src/sdiff.c src/util.c
+git commit -m 'patched'
+
+then I make two directories 
+mkdir diffutils-3.0-patch
+mkdir diffutils-3.0
+
+and I copied src in patched v3.0 into diffutils-3.0-patch: cp -r src/ diffutils-3.0-patch/
+then I change to the old v3.0: git checkout v3.0
+in there I copied src into diffutils-3.0: cp -r src/ diffutils-3.0/
+then I switch back to branch myv3.0: git checkout myv3.0
+src/diff -pru diffutils-3.0 diffutils-3.0-patch >quote-3.0-test.txt
+
+15. diff quote-3.0-patch.txt quote-3.0-test.txt 
+there seems to be difference, but they are only different becasue of the format 
+the differences are inoculous 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

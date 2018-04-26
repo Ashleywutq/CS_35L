@@ -1,0 +1,10 @@
+#! /bin/bash
+
+cd /usr/bin
+name=`ls /usr/bin | awk 'NR%101==204612415%101'`
+for i in $name
+do 
+	printf "%s:\n" "$i"
+	result=`ldd /usr/bin/$i`
+	printf "%s\n" "$result"
+done

@@ -1,0 +1,31 @@
+lab7:
+
+1. connect my Beaglebone to my laptop as instructed on the maunal 
+2. connect my Beaglebone to wifi through steps as instructed on the manual 
+	in terminal ssh root@192.168.8.1
+3. passwd 
+	then type in ashley
+4. install xauth and xterm 
+	apt-get install xauth
+	apt-get install xterm
+5. hostname ashleyhost
+6. let my partener's board connect to the same wifi 
+7. in my board's root, type ssh root@172.16.42.6
+	I get this IP address from ifconfig on my partner's board
+8. logout from my partener's board
+	useradd justin
+	mkdir /home/justin
+	chown justin /home/justin
+9. ssh in to partner's board with the new user account created named ashley 
+	ssh ashley@172.16.42.6
+	logout from partner's board 
+10. in my board's root
+	ssh-keygen
+	ssh-copy-id ashley@172.16.42.6
+	eval `ssh-agent`
+	ssh-add
+11. close all terminals connected to BBG
+	ssh -X root@192.168.8.1
+	ssh -X ashley@172.16.42.6
+	xterm
+	and we can see a shell window on my host 

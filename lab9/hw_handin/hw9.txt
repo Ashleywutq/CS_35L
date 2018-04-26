@@ -1,0 +1,43 @@
+hw9:
+
+1. make hw9.txt file
+
+2. checkout version 3.0 of Diffutils 
+git checkout v3.0
+git checkout -b quote
+
+3. patch this version 
+patch -p1 <quote-3.0-patch.txt 
+
+4. 5. learn how to use emacs 
+I open each patched file and use C-x 4 a to add change log 
+
+6. commit changes
+git commit -F ChangeLog
+
+7.make a patch
+git format-patch -1 --stdout > formatted-patch.txt
+
+8. check if partner's patch works (I don't think we assigend partners in the class so i'm just testing mine here)
+
+git checkout -b partner v3.0
+git am formatted-patch.txt
+	Applying: 2018-03-15 Tianqing Wu <classtwu@lnxsrv08.seas.ucla.edu>
+./bootstrap
+./configure
+make
+make check
+
+I ran this to make sure it works 
+./src/diff . - : shows ./src/diff: cannot compare '-' to a directory
+
+9.varify ChangeLog works 
+make distdir
+it creates a folder diffutils-3.0.1-7a06, and I looked into the ChangeLog in the folder and it has my newest commit in it
+
+10. git clone ~eggert/src/gnu/emacs
+I reopen the server with ssh -X command so that we can have graphic display
+and use gitk to see the window
+
+
+
