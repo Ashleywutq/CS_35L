@@ -1,0 +1,110 @@
+lab4:
+1.download the tar file
+  upload it to the serveer using Cyberduck
+  check file type using: file c[tab]
+  unzip file: tar -xzvf c[tab]
+  ./configure --prefix=/u/eng/class/classtwu/Desktop/CS35L/lab4/coreutils-with-  bug
+  make
+  after each step check if last step succeesd: echo $?
+
+2.we get error when runing make
+  error message shows that there are two different declairation of futimens
+
+3.get the patch
+  wget https://web.cs.ucla.edu/classes/winter18/cs35L/assign/coreutils.diff
+
+4.change the patch file name in coreutils.diff and patch the original files
+  the patch change one of the futimens function name to coreutils-futimens
+  thus solve the bug we had when making the file
+  patch -p0 < coreutil.diff
+  make
+  make install
+
+5.reproduce the problem
+  I typed the command on HW page and changed ls line to
+
+$ TZ=UTCO ~/Desktop/CS35L/lab4/coreutils-with-bug/bin/ls -lt --full-time wwi-armistice now now1
+
+  and i get the bug
+
+-rw-r--r-- 1 classtwu class 0 1918-11-11 03:00:00.000000000 -0800 wwi-armistice
+-rw-r--r-- 1 classtwu class 0 2018-02-07 20:32:10.251378737 -0800 now1
+-rw-r--r-- 1 classtwu class 0 2018-02-07 20:32:03.727201211 -0800 now
+
+6.use debugger to figure out the problem
+  in the same tmp directory, I typed
+  gdb ~/Desktop/CS35L/lab4/coreutils-with-bug/bin/ls
+
+  I looked up -t in ls.c and found it's related to the sort_type = sort_time
+  in sort_files function
+  if (! setjmp (failed_strcoll)).....
+    case sort_time:
+      switch (time_type)
+            {
+            case time_ctime:
+              func = sort_reverse ? rev_cmp_ctime : compare_ctime;
+              break;
+            case time_mtime:
+              func = sort_reverse ? rev_cmp_mtime : compare_mtime;
+              break;
+            case time_atime:
+              func = sort_reverse ? rev_cmp_atime : compare_atime;
+              break;
+	    default:
+              abort ();
+             }......
+
+in order to determine which funtion we used, I put a breakpoint at line 2961
+(gdb) b 2961
+(gdb) r -lt --full-time wwi-armistice now now1
+
+and I found that we used: func = sort_reverse ? rev_cmp_mtime : compare_mtime;
+the I set breakpoints at both functions
+(gdb) b rev_cmp_mtime
+(gdb) b comapre_mtime
+then I run the program in gdb again
+I found that we used qsort (files, files_index, sizeof *files, func);
+static int compare_mtime (V a, V b) { return cmp_mtime (a, b, xstrcoll); }
+
+static inline int
+cmp_mtime (struct fileinfo const *a, struct fileinfo const *b,
+           int (*cmp) (char const *, char const *))
+{
+  int diff = timespec_cmp (get_stat_mtime (&b->stat),
+                           get_stat_mtime (&a->stat));
+  return diff ? diff : cmp (a->name, b->name);
+}
+
+(gdb) info locals
+diff = 7  ..first round 
+diff = -1163076966 ..second round
+7 is the time difference of now1-now
+then I assume -1163076966 is the time difference of now/now1 - wwi-armistice
+but because this number is too big, it causes overflow so that it makes wwi-armistice seems larger
+
+we need to fix this in timespec_cmp at /liv/timespec.h
+
+7.fix the bug
+cp timespec.h timespec2.h
+change the substraction into comparision in timespec2.h
+$ diff -u timespec.h timespec2.h > patch.diff
+emacs C-x 4 a
+added content in ChangeLog
+cp ChangeLog lab4.diff
+cat patch.diff >> lab4.diff
+
+8.test it 
+after I patch the file and make again
+$ TZ=UTCO ~/Desktop/CS35L/lab4/coreutils-with-bug/src/ls -lt --full-time hi now now1
+-rw-r--r-- 1 classtwu class 0 2018-02-08 07:14:14.320766303 +0000 now1
+-rw-r--r-- 1 classtwu class 0 2018-02-08 07:14:08.478607348 +0000 now
+-rw-r--r-- 1 classtwu class 0 1918-11-11 11:00:00.000000000 +0000 hi
+
+when I test it on SEAS server, it doesn't work in my home directory 
+TZ=UTCO ls -lt --full-time hi now now1
+-rw-r--r-- 1 classtwu class 0 2055-12-17 17:28:16.000000000 +0000 hi
+-rw-r--r-- 1 classtwu class 0 2018-02-08 07:19:32.725279000 +0000 now1
+-rw-r--r-- 1 classtwu class 0 2018-02-08 07:19:23.600441000 +0000 now
+
+the SEAS server changed the ancient time to a time in future 
+

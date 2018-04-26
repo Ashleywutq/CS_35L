@@ -1,0 +1,36 @@
+lab:
+1.downloaded Coreutils 7.6  from website
+
+2.upload it to server using Cyberduck
+  check file mode: file coreutils-7.6.tar.gz
+  unarchive file: tar -xzvf coreutils-7.6.tar.gz
+  go to the new directory: cd coreutils-7.6
+  ./configure --prefix=/u/eng/class/classtwu/Desktop/CS35L/lab3
+  make
+  make install
+  after each step check if last step succeeds:echo $?
+
+3.reproduce the bug
+  in ~/Desktop/35L/lab3/bin directory: ./ls -l
+  -rwxr-xr-x 1 classtwu class 104584 2018-01-22 12:21 unexpand
+
+4.patch
+  go to /coreutils-7.6/src/ls.c
+  and /coreutils-7.6/NEWS
+  and change everything
+
+5.make
+  make in the coreutils-7.6 directory
+  to recompile the changed parts
+  
+6.test
+  the ls in bin doesn't work
+  -rwxr-xr-x 1 classtwu class 122440 2018-01-22 12:21 tsort
+  
+  the ls in src works
+  ./ls -l ls.c
+  -rwxr--r-- 1 classtwu class 144465 Jan 31 10:43 ls.c
+
+  touch -m -t 201101010101 yes.c
+  ./ls -l yes.c
+  -rw-r--r-- 1 classtwu class 2458 Jan  1  2011 yes.c

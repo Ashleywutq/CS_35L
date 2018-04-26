@@ -1,0 +1,12 @@
+HW3:
+Q1:
+case_long_iso_time_style is a label for the goto command we deleted in the patch. And the goto command is the only command that uses this label. So he deleted this label. It's not necessary to move that line because no function will call this label.
+
+Q2:
+If no translation is found by dcgettext then dcgettext will return long_time_format[i]. The displayed format might not be understood by non-english speaking people. 
+
+Q3:
+script is invoked on a empty file: IndexError is raised by random.py because in random.choice(self.lines) function, we used choice function which includes return seq[int(self.random()* len(seq)]. seq is empty so we can't get seq[x].
+
+Q4:
+SyntaxError is raised for except IOError, because python 3 merges IOError to OSError. 
